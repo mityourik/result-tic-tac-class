@@ -1,24 +1,36 @@
-import { useSelector } from 'react-redux';
-import styles from './Information.module.css';
+import { Component } from 'react';
+import { connect } from 'react-redux';
 import InformationLayout from './InformationLayout';
 
-function Information() {
-    const { currentPlayer, isGameEnded, isDraw } = useSelector(
-        (state) => state
-    );
+class Information extends Component {
+    constructor(props) {
+        super(props);
+        this.getStatus = this.getStatus.bind(this);
+    }
 
-    const getStatus = () => {
+    getStatus() {
+        const { currentPlayer, isGameEnded, isDraw } = this.props;
         if (isDraw) return 'Ничья!';
         if (isGameEnded) return `Победил ${currentPlayer}!`;
         return `Ходит: ${currentPlayer}`;
-    };
+    }
 
-    return (
-        <InformationLayout>
-            <h1 className={styles['information__title']}>крестики-нолики</h1>
-            <div className={styles['information__status']}>{getStatus()}</div>
-        </InformationLayout>
-    );
+    render() {
+        return (
+            <InformationLayout>
+                <h1 className="text-2xl mb-2 uppercase font-bold">
+                    крестики-нолики
+                </h1>
+                <div className="text-xl font-bold">{this.getStatus()}</div>
+            </InformationLayout>
+        );
+    }
 }
 
-export default Information;
+const mapStateToProps = (state) => ({
+    currentPlayer: state.currentPlayer,
+    isGameEnded: state.isGameEnded,
+    isDraw: state.isDraw,
+});
+
+export default connect(mapStateToProps)(Information);

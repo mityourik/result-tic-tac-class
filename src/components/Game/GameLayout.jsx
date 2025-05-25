@@ -1,8 +1,16 @@
-import React from 'react';
-import styles from './Game.module.css';
+import { Component } from 'react';
 
-function GameLayout({ children }) {
-    return <div className={styles['game']}>{children}</div>;
+class GameLayout extends Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="text-center font-sans m-5">
+                {this.props.children}
+            </div>
+        );
+    }
 }
 
 export default GameLayout;

@@ -1,8 +1,12 @@
-import React from 'react';
-import styles from './Information.module.css';
+import { Component } from 'react';
 
-function InformationLayout({ children }) {
-    return <div className={styles['information']}>{children}</div>;
+class InformationLayout extends Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return <div className="mb-7">{this.props.children}</div>;
+    }
 }
 
 export default InformationLayout;

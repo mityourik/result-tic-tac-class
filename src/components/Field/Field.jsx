@@ -1,16 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { Component } from 'react';
+import { connect } from 'react-redux';
 import { setDraw, setField, setWinner } from '../../actions/gameActions';
 import { WIN_PATTERNS } from '../../constants';
-import styles from './Field.module.css';
 import FieldLayout from './FieldLayout';
 
-function Field() {
-    const { field, currentPlayer, isGameEnded, winningCells } = useSelector(
-        (state) => state
-    );
-    const dispatch = useDispatch();
+class Field extends Component {
+    constructor(props) {
+        super(props);
+        this.handleCellClick = this.handleCellClick.bind(this);
+    }
 
-    const handleCellClick = (index) => {
+    handleCellClick(index) {
+        const {
+            field,
+            isGameEnded,
+            currentPlayer,
+            setField,
+            setWinner,
+            setDraw,
+        } = this.props;
         if (field[index] !== '' || isGameEnded) return;
 
         const newField = [...field];
@@ -21,37 +29,54 @@ function Field() {
         );
 
         if (winningCombination) {
-            dispatch(setField(newField, currentPlayer));
-            dispatch(setWinner(winningCombination));
+            setField(newField, currentPlayer);
+            setWinner(winningCombination);
             return;
         }
 
         if (!newField.includes('')) {
-            dispatch(setField(newField, currentPlayer));
-            dispatch(setDraw());
+            setField(newField, currentPlayer);
+            setDraw();
             return;
         }
 
-        dispatch(setField(newField, currentPlayer === 'X' ? '0' : 'X'));
-    };
+        setField(newField, currentPlayer === 'X' ? '0' : 'X');
+    }
 
-    return (
-        <FieldLayout>
-            {field.map((cell, index) => (
-                <button
-                    key={index}
-                    className={`${styles.field__cell} ${
-                        winningCells?.includes(index)
-                            ? styles.field__cell__winner
-                            : ''
-                    }`}
-                    onClick={() => handleCellClick(index)}
-                >
-                    {cell}
-                </button>
-            ))}
-        </FieldLayout>
-    );
+    render() {
+        const { field, winningCells } = this.props;
+        return (
+            <FieldLayout>
+                {field.map((cell, index) => (
+                    <button
+                        key={index}
+                        className="w-[100px] h-[100px] text-2xl cursor-pointer rounded-lg"
+                        style={{
+                            border: winningCells?.includes(index)
+                                ? '2px solid #22c55e'
+                                : '1px solid #ccc',
+                        }}
+                        onClick={() => this.handleCellClick(index)}
+                    >
+                        {cell}
+                    </button>
+                ))}
+            </FieldLayout>
+        );
+    }
 }
 
-export default Field;
+const mapStateToProps = (state) => ({
+    field: state.field,
+    currentPlayer: state.currentPlayer,
+    isGameEnded: state.isGameEnded,
+    winningCells: state.winningCells,
+});
+
+const mapDispatchToProps = {
+    setField,
+    setWinner,
+    setDraw,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Field);

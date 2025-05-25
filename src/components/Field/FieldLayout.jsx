@@ -1,8 +1,16 @@
-import React from 'react';
-import styles from './Field.module.css';
+import { Component } from 'react';
 
-function FieldLayout({ children }) {
-    return <div className={styles['field']}>{children}</div>;
+class FieldLayout extends Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="grid grid-cols-3 gap-[5px] justify-center mx-auto">
+                {this.props.children}
+            </div>
+        );
+    }
 }
 
 export default FieldLayout;
